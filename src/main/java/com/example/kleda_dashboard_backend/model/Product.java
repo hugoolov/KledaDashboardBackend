@@ -1,25 +1,50 @@
 package com.example.kleda_dashboard_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
+@Table(name = "products")
+@Data
 @NoArgsConstructor
-@Getter@Setter
+@AllArgsConstructor
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
     private String description;
-    private Double price;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
     private String category;
-    private String brand;
+
+    private String size;
+
+    private String color;
+
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

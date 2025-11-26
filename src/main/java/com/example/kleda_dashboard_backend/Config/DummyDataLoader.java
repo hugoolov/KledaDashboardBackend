@@ -49,10 +49,10 @@ public class DummyDataLoader implements CommandLineRunner {
     private List<Brand> createBrands() {
         List<Brand> brands = new ArrayList<>();
 
-        Brand nike = new Brand(null, "Nike", "Athletic apparel and footwear", "USA", null);
-        Brand adidas = new Brand(null, "Adidas", "Sports clothing and accessories", "Germany", null);
-        Brand zara = new Brand(null, "Zara", "Fast fashion clothing", "Spain", null);
-        Brand hm = new Brand(null, "H&M", "Affordable fashion", "Sweden", null);
+        Brand nike = new Brand(null ,"Nike", "Athletic apparel and footwear", "USA");
+        Brand adidas = new Brand(null, "Adidas", "Sports clothing and accessories", "Germany");
+        Brand zara = new Brand(null, "Zara", "Fast fashion clothing", "Spain");
+        Brand hm = new Brand(null, "H&M", "Affordable fashion", "Sweden");
 
         brands.add(brandRepository.save(nike));
         brands.add(brandRepository.save(adidas));
@@ -105,8 +105,7 @@ public class DummyDataLoader implements CommandLineRunner {
                     unitPrice,
                     unitPrice.multiply(BigDecimal.valueOf(quantity)),
                     "CUST-" + (1000 + random.nextInt(50)),
-                    LocalDateTime.now().minusDays(random.nextInt(90)),
-                    null
+                    LocalDateTime.now().minusDays(random.nextInt(90))
             );
             sales.add(saleRepository.save(sale));
         }
@@ -135,8 +134,7 @@ public class DummyDataLoader implements CommandLineRunner {
                     returnQuantity,
                     refundAmount,
                     reasons[random.nextInt(reasons.length)],
-                    sale.getSaleDate().plusDays(random.nextInt(14) + 1),
-                    null
+                    sale.getSaleDate().plusDays(random.nextInt(14) + 1)
             );
             returnRepository.save(returnItem);
         }
@@ -152,8 +150,7 @@ public class DummyDataLoader implements CommandLineRunner {
                     product,
                     random.nextInt(3) + 1,
                     LocalDateTime.now().minusDays(random.nextInt(7)),
-                    true,
-                    null
+                    true
             );
             cartRepository.save(cart);
         }
