@@ -26,6 +26,11 @@ public class DummyDataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+
+        if (brandRepository.count() > 0) {
+            System.out.println("Database already contains data. Skipping.");
+            return;
+        }
         System.out.println("Loading dummy data...");
 
         // Create Brands
