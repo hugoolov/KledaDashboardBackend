@@ -22,5 +22,6 @@ public class BrandAnalyticsDTO {
     private Integer uniqueProductCount;
     private BigDecimal averageOrderValue;
     private Double returnRate;
+    private Double conversionRate; // Percentage of cart additions that converted to sales
 }
 
