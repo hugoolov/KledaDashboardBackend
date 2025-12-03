@@ -117,9 +117,21 @@ Response example:
   "productsInCarts": 8,
   "uniqueProductCount": 8,
   "averageOrderValue": 130.02,
-  "returnRate": 12.00
+  "returnRate": 12.00,
+  "conversionRate": 75.76
 }
 ```
+
+**Analytics Metrics Explained:**
+- `totalSales`: Number of completed sales transactions
+- `totalRevenue`: Total revenue generated from sales
+- `totalReturns`: Number of returned items
+- `totalRefunded`: Total amount refunded
+- `productsInCarts`: Number of products currently in active carts
+- `uniqueProductCount`: Number of unique products offered by the brand
+- `averageOrderValue`: Average value per sale transaction
+- `returnRate`: Percentage of sales that were returned
+- `conversionRate`: Percentage of cart additions that converted to actual sales (shows how many potential customers completed their purchase)
 
 ### Get brand sales
 ```bash
