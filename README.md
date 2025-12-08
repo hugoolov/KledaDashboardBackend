@@ -1,111 +1,273 @@
-```
-```
+# Kleda Dashboard Backend
 
-# Clothing Sales Platform - Backend Prototype
+En Spring Boot backend-applikasjon for å administrere klesalgsdata, inkludert salg, returer, produkter og handlevogner. Designet for å støtte merkevaredashboards med analyser.
 
-A Spring Boot backend system for managing clothing sales data, including sales, returns, products, and shopping carts. Designed to support brand dashboards for analytics.
-
-## Tech Stack
+## Teknologi
 - Java 21
-- Spring Boot 4.0.0
+- Spring Boot 3.2.0
 - Maven
-- H2 In-Memory Database
+- H2 In-Memory Database (utvikling) / PostgreSQL (produksjon)
 - Spring Data JPA
+- Spring Security (BCrypt for passordkryptering)
 - Lombok
 
-## Project Structure
+## Prosjektstruktur
 ```
-src/main/java/com/platform/
-├── ClothingSalesPlatformApplication.java  # Main application
-├── config/
-│   └── DummyDataLoader.java              # Populates dummy data
-├── controller/                            # REST controllers
+src/main/java/com/example/kleda_dashboard_backend/
+├── KledaDashboardBackendApplication.java  # Hovedapplikasjon
+├── Config/
+│   └── DummyDataLoader.java              # Laster inn testdata
+├── controllers/                           # REST-kontrollere
+│   ├── AuthController.java
 │   ├── BrandController.java
 │   ├── CartController.java
 │   ├── ProductController.java
 │   └── SalesController.java
-├── dto/                                   # Data Transfer Objects
+├── dtos/                                  # Data Transfer Objects
+│   ├── AuthRequest.java
+│   ├── AuthResponse.java
 │   ├── BrandAnalyticsDTO.java
 │   ├── CartSummaryDTO.java
 │   └── SalesReportDTO.java
-├── model/                                 # JPA entities
+├── model/                                 # JPA-entiteter
 │   ├── Brand.java
 │   ├── Cart.java
+│   ├── Category.java
 │   ├── Product.java
 │   ├── Return.java
-│   └── Sale.java
-├── repository/                            # Data repositories
+│   ├── Sale.java
+│   └── User.java
+├── repos/                                 # Database repositories
 │   ├── BrandRepository.java
 │   ├── CartRepository.java
 │   ├── ProductRepository.java
 │   ├── ReturnRepository.java
-│   └── SaleRepository.java
-└── service/                               # Business logic
+│   ├── SaleRepository.java
+│   └── UserRepo.java
+└── services/                              # Forretningslogikk
     ├── AnalyticsService.java
+    ├── AuthService.java
     ├── BrandService.java
     ├── CartService.java
     ├── ProductService.java
-    └── SalesService.java
+    └── SaleService.java
 ```
 
-## Running the Application
+## Kjøre Applikasjonen
 
-### Prerequisites
-- Java 21 installed
-- Maven installed
+### Forutsetninger
+- Java 21 installert
+- Maven installert
 
-### Steps
-1. Navigate to the project directory:
+### Lokal Utvikling (H2 Database)
+
+1. Naviger til prosjektmappen:
    ```bash
-   cd clothing-sales-platform
+   cd kleda_dashboard_backend
    ```
 
-2. Build the project:
+2. Bygg prosjektet:
    ```bash
    mvn clean install
    ```
 
-3. Run the application:
+3. Kjør applikasjonen:
    ```bash
    mvn spring-boot:run
    ```
 
-4. The application will start on `http://localhost:8080`
+4. Applikasjonen starter på `http://localhost:8080`
 
-## API Endpoints
+## API Endepunkter
 
-### Brands
-- `GET /api/brands` - Get all brands
-- `GET /api/brands/{id}` - Get specific brand
-- `GET /api/brands/{id}/sales` - Get sales for a brand
-- `GET /api/brands/{id}/returns` - Get returns for a brand
-- `GET /api/brands/{id}/carts` - Get active carts containing brand products
-- `GET /api/brands/{id}/analytics` - Get aggregated analytics for a brand
+### Autentisering
 
-### Products
-- `GET /api/products` - Get all products
-- `GET /api/products?brandId={id}` - Get products by brand
-- `GET /api/products/{id}` - Get specific product
-
-### Sales
-- `GET /api/sales` - Get all sales
-
-### Carts
-- `GET /api/carts` - Get all active carts
-
-## Example API Calls
-
-### Get all brands
+#### Sjekk om brukernavn er tilgjengelig
 ```bash
-curl http://localhost:8080/api/brands
+GET /api/auth/check-username?username=testuser
 ```
 
-### Get brand analytics
-```bash
-curl http://localhost:8080/api/brands/1/analytics
+**Respons:**
+```json
+true
 ```
 
-Response example:
+#### Registrer ny bruker
+```bash
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123",
+  "brand": "Nike"
+}
+```
+
+**Respons:**
+```json
+{
+  "userId": 1,
+  "username": "testuser"
+}
+```
+
+#### Logg inn
+```bash
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
+
+**Respons:**
+```json
+{
+  "userId": 1,
+  "username": "testuser"
+}
+```
+
+### Merkevarer (Brands)
+
+#### Hent alle merkevarer
+```bash
+GET /api/brands
+```
+
+**Respons:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Nike",
+    "description": "Athletic apparel and footwear",
+    "country": "USA"
+  },
+  {
+    "id": 2,
+    "name": "Adidas",
+    "description": "Sports clothing and accessories",
+    "country": "Germany"
+  }
+]
+```
+
+#### Hent spesifikk merkevare
+```bash
+GET /api/brands/{id}
+```
+
+**Eksempel:**
+```bash
+GET /api/brands/1
+```
+
+**Respons:**
+```json
+{
+  "id": 1,
+  "name": "Nike",
+  "description": "Athletic apparel and footwear",
+  "country": "USA"
+}
+```
+
+#### Hent salg for en merkevare
+```bash
+GET /api/brands/{id}/sales
+```
+
+**Eksempel:**
+```bash
+GET /api/brands/1/sales
+```
+
+**Respons:**
+```json
+[
+  {
+    "saleId": 1,
+    "productName": "Nike T-Shirt 1",
+    "brandName": "Nike",
+    "quantity": 2,
+    "unitPrice": 89.99,
+    "totalPrice": 179.98,
+    "saleDate": "2024-11-15T14:30:00",
+    "customerId": "CUST-1023"
+  }
+]
+```
+
+#### Hent returer for en merkevare
+```bash
+GET /api/brands/{id}/returns
+```
+
+**Eksempel:**
+```bash
+GET /api/brands/1/returns
+```
+
+**Respons:**
+```json
+[
+  {
+    "id": 1,
+    "sale": {
+      "id": 5,
+      "product": {...},
+      "quantity": 2,
+      "totalPrice": 179.98
+    },
+    "quantity": 1,
+    "refundAmount": 89.99,
+    "reason": "Wrong size",
+    "returnDate": "2024-11-20T10:15:00"
+  }
+]
+```
+
+#### Hent aktive handlevogner for en merkevare
+```bash
+GET /api/brands/{id}/carts
+```
+
+**Eksempel:**
+```bash
+GET /api/brands/1/carts
+```
+
+**Respons:**
+```json
+[
+  {
+    "cartId": 1,
+    "customerId": "CUST-1015",
+    "productName": "Nike Shoes 3",
+    "brandName": "Nike",
+    "quantity": 1,
+    "pricePerUnit": 129.99,
+    "subtotal": 129.99,
+    "addedAt": "2024-12-05T16:45:00"
+  }
+]
+```
+
+#### Hent analysedata for en merkevare
+```bash
+GET /api/brands/{id}/analytics
+```
+
+**Eksempel:**
+```bash
+GET /api/brands/1/analytics
+```
+
+**Respons:**
 ```json
 {
   "brandId": 1,
@@ -117,33 +279,162 @@ Response example:
   "productsInCarts": 8,
   "uniqueProductCount": 8,
   "averageOrderValue": 130.02,
-  "returnRate": 12.00
+  "returnRate": 12.00,
+  "conversionRate": 75.76
 }
 ```
 
-### Get brand sales
+**Forklaring av analysemetrikker:**
+- `totalSales`: Antall fullførte salgstransaksjoner
+- `totalRevenue`: Total omsetning fra salg
+- `totalReturns`: Antall returnerte varer
+- `totalRefunded`: Totalt beløp refundert
+- `productsInCarts`: Antall produkter i aktive handlevogner
+- `uniqueProductCount`: Antall unike produkter tilbudt av merkevaren
+- `averageOrderValue`: Gjennomsnittlig verdi per salgstransaksjon
+- `returnRate`: Prosent av salg som ble returnert
+- `conversionRate`: Prosent av handlekurv-tillegg som ble konvertert til faktiske salg
+
+### Produkter
+
+#### Hent alle produkter
 ```bash
-curl http://localhost:8080/api/brands/1/sales
+GET /api/products
 ```
 
-### Get products by brand
-```bash
-curl http://localhost:8080/api/products?brandId=1
+**Respons:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Nike T-Shirt 1",
+    "description": "Premium quality t-shirt",
+    "price": 89.99,
+    "category": "T-Shirt",
+    "size": "M",
+    "color": "Black",
+    "stockQuantity": 45,
+    "brand": {
+      "id": 1,
+      "name": "Nike",
+      "description": "Athletic apparel and footwear",
+      "country": "USA"
+    },
+    "createdAt": "2024-12-08T10:00:00"
+  }
+]
 ```
 
-## Dummy Data
+#### Hent produkter for en merkevare
+```bash
+GET /api/products?brandId={id}
+```
 
-The application automatically loads dummy data on startup:
-- 4 brands (Nike, Adidas, Zara, H&M)
-- 32 products (8 per brand)
-- 100 sales transactions
-- ~15 returns (15% return rate)
-- 30 active shopping carts
+**Eksempel:**
+```bash
+GET /api/products?brandId=1
+```
 
-## H2 Database Console
+#### Hent spesifikt produkt
+```bash
+GET /api/products/{id}
+```
 
-You can access the H2 database console at:
+**Eksempel:**
+```bash
+GET /api/products/1
+```
+
+### Salg
+
+#### Hent alle salg
+```bash
+GET /api/sales
+```
+
+**Respons:**
+```json
+[
+  {
+    "id": 1,
+    "product": {
+      "id": 3,
+      "name": "Nike Jeans 2",
+      "price": 129.99,
+      "brand": {...}
+    },
+    "quantity": 2,
+    "unitPrice": 129.99,
+    "totalPrice": 259.98,
+    "customerId": "CUST-1023",
+    "saleDate": "2024-11-15T14:30:00"
+  }
+]
+```
+
+### Handlevogner
+
+#### Hent alle aktive handlevogner
+```bash
+GET /api/carts
+```
+
+**Respons:**
+```json
+[
+  {
+    "id": 1,
+    "customerId": "CUST-1015",
+    "product": {
+      "id": 5,
+      "name": "Nike Shoes 3",
+      "price": 129.99,
+      "brand": {...}
+    },
+    "quantity": 1,
+    "addedAt": "2024-12-05T16:45:00",
+    "isActive": true
+  }
+]
+```
+
+## Testdata
+
+Applikasjonen laster automatisk inn testdata ved oppstart:
+- 4 merkevarer (Nike, Adidas, Zara, H&M)
+- 32 produkter (8 per merkevare)
+- 100 salgstransaksjoner
+- ~15 returer (15% returrate)
+- 30 aktive handlevogner
+
+## H2 Database Console (kun lokal utvikling)
+
+Du kan få tilgang til H2-databasekonsollen på:
 - URL: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:mem:clothingdb`
-- Username: `sa`
-- Password: (leave empty)
+- Brukernavn: `sa`
+- Passord: (la stå tomt)
+
+## Feilhåndtering
+
+API-et returnerer passende HTTP-statuskoder:
+- `200 OK` - Vellykket forespørsel
+- `400 Bad Request` - Ugyldig forespørsel (f.eks. manglende påkrevde felt)
+- `404 Not Found` - Ressurs ikke funnet
+- `500 Internal Server Error` - Serverfeil
+
+Feilresponser har følgende format:
+```json
+{
+  "error": "Feilmelding her"
+}
+```
+
+Eller som ren tekst avhengig av endepunkt.
+
+## Utviklingsnotater
+
+- Passord krypteres med BCrypt før lagring
+- H2-database brukes for lokal utvikling (data går tapt ved restart)
+- PostgreSQL brukes i Docker/produksjonsmiljø (persistent data)
+- CORS er ikke konfigurert - må legges til ved behov for frontend-integrasjon
