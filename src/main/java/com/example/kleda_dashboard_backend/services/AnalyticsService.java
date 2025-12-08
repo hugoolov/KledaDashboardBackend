@@ -49,6 +49,15 @@ public class AnalyticsService {
             returnRate = Math.round(returnRate * 100.0) / 100.0;
         }
 
+        // Calculate conversion rate: (total sales / (total sales + products in carts)) * 100
+        // This shows the percentage of potential customers (those who added to cart) who completed purchases
+        Double conversionRate = 0.0;
+        long totalCartInteractions = totalSales + productsInCarts;
+        if (totalCartInteractions > 0) {
+            conversionRate = (totalSales.doubleValue() / totalCartInteractions) * 100;
+            conversionRate = Math.round(conversionRate * 100.0) / 100.0;
+        }
+
         return new BrandAnalyticsDTO(
                 brandId,
                 brand.getName(),
@@ -59,7 +68,8 @@ public class AnalyticsService {
                 productsInCarts,
                 uniqueProductCount,
                 averageOrderValue,
-                returnRate
+                returnRate,
+                conversionRate
         );
     }
 }
