@@ -437,4 +437,3 @@ Eller som ren tekst avhengig av endepunkt.
 - Passord krypteres med BCrypt før lagring
 - H2-database brukes for lokal utvikling (data går tapt ved restart)
 - PostgreSQL brukes i Docker/produksjonsmiljø (persistent data)
-- CORS er ikke konfigurert - må legges til ved behov for frontend-integrasjon
