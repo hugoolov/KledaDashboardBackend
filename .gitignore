@@ -29,6 +29,6 @@ build/
 
 ### VS Code ###
 .vscode/
-/mvnw.cmd
-/mvnw
-/.mvn/
+
+# Maven Wrapper jar should be excluded, but wrapper scripts should be included
+.mvn/wrapper/maven-wrapper.jar
