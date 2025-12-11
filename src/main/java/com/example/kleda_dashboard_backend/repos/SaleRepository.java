@@ -15,6 +15,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     List<Sale> findByProductBrandId(Long brandId);
 
+    List<Sale> findByProductId(Long productId);
+
     List<Sale> findBySaleDateBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT COUNT(s) FROM Sale s WHERE s.product.brand.id = :brandId")

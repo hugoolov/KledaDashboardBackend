@@ -33,6 +33,8 @@ public class Product {
 
     private String color;
 
+    private String image;
+
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
 

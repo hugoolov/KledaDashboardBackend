@@ -1,6 +1,5 @@
 package com.example.kleda_dashboard_backend.repos;
 
-
 import com.example.kleda_dashboard_backend.model.Return;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +13,8 @@ import java.util.List;
 public interface ReturnRepository extends JpaRepository<Return, Long> {
 
     List<Return> findBySaleProductBrandId(Long brandId);
+
+    List<Return> findBySaleProductId(Long productId);
 
     @Query("SELECT COUNT(r) FROM Return r WHERE r.sale.product.brand.id = :brandId")
     Long countByBrandId(@Param("brandId") Long brandId);

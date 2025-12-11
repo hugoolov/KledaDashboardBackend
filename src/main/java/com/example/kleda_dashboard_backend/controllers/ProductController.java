@@ -1,7 +1,9 @@
 package com.example.kleda_dashboard_backend.controllers;
 
+import com.example.kleda_dashboard_backend.dtos.ProductStatsDTO;
 import com.example.kleda_dashboard_backend.model.Product;
 import com.example.kleda_dashboard_backend.services.ProductService;
+import com.example.kleda_dashboard_backend.services.ProductStatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductStatsService productStatsService;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(
@@ -29,6 +32,13 @@ public class ProductController {
         return productService.getProductById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/stats")
+    public ResponseEntity<ProductStatsDTO> getProductStats(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "month") String period) {
+        return ResponseEntity.ok(productStatsService.getProductStats(id, period));
     }
 }
 
